@@ -1,6 +1,7 @@
 import logging
 from abc import abstractmethod, abstractproperty
 import json
+import re
 from boto.exception import BotoServerError
 from django.conf import settings
 from django.db import models
