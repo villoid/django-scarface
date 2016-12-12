@@ -2,7 +2,7 @@ import logging
 from abc import abstractmethod, abstractproperty
 import json
 from boto.exception import BotoServerError
-import re
+from django.conf import settings
 from django.db import models
 from scarface.platform_strategy import get_strategies
 from scarface.utils import DefaultConnection, PushLogger
@@ -11,7 +11,8 @@ from scarface.exceptions import SNSNotCreatedException, PlatformNotSupported, \
 
 
 logger = logging.getLogger('django_scarface')
-
+UserModel = settings.AUTH_USER_MODEL
+OwnerModel = settings.SCARFACE_DEVICE_OWNER_MODEL if hasattr(settings, "SCARFACE_DEVICE_OWNER_MODEL") else UserModel
 
 class SNSCRUDMixin(object):
 
@@ -134,6 +135,7 @@ class Application(models.Model):
 
 
 class Device(SNSCRUDMixin, models.Model):
+
     '''
     Device class for registering a end point to
     SNS.
@@ -145,6 +147,13 @@ class Device(SNSCRUDMixin, models.Model):
 
     platform = models.ForeignKey(
         to='Platform',
+        related_name='devices'
+    )
+
+    owner = models.ForeignKey(
+        to=OwnerModel,
+        null=True,
+        blank=True,
         related_name='devices'
     )
 
