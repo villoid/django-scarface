@@ -590,6 +590,8 @@ class PushMessage(models.Model):
     MESSAGE_TYPE_TOPIC = 1
     sound = models.TextField(blank=True, null=True)
     message = models.TextField(default='', null=True)
+    category = models.TextField(blank=True, null=True)
+    has_mutable_content = models.BooleanField(default=False)
     has_new_content = models.BooleanField(default=False)
     context_id = models.TextField(default='none', null=True)
     context = models.TextField(default='default', null=True)

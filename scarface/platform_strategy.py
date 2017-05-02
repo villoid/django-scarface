@@ -51,13 +51,14 @@ class PlatformStrategy(with_metaclass(ABCMeta)):
     def format_payload(self, data):
         return {self.platform.platform: json.dumps(data)}
 
-    def format_push(self, badgeCount, context, context_id, has_new_content, message,
+    def format_push(self, badgeCount, context, context_id, category, has_mutable_content, has_new_content, message,
             sound):
         if message:
             message = self.trim_message(message)
 
         payload = {
             'aps': {
+                "mutable-content": has_mutable_content,
                 "content-available": has_new_content,
             },
             "ctx": context,
@@ -66,6 +67,9 @@ class PlatformStrategy(with_metaclass(ABCMeta)):
 
         if message and len(message) > 0:
             payload['aps']['alert'] = message
+
+        if category and len(category) > 0:
+            payload['aps']['category'] = category
 
         if not badgeCount is None:
             payload['aps'].update({
@@ -107,6 +111,8 @@ class APNPlatformStrategy(PlatformStrategy):
             message.badge_count,
             message.context,
             message.context_id,
+            message.category,
+            message.has_mutable_content,
             message.has_new_content,
             message.message, message.sound
         )
@@ -135,6 +141,8 @@ class APNSSandboxPlatformStrategy(PlatformStrategy):
             message.badge_count,
             message.context,
             message.context_id,
+            message.category,
+            message.has_mutable_content,
             message.has_new_content,
             message.message, message.sound
         )
