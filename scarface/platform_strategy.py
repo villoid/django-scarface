@@ -84,13 +84,12 @@ class PlatformStrategy(with_metaclass(ABCMeta)):
         return payload
 
     def trim_message(self, message):
-        import sys
         trim_length = SCARFACE_DEFAULT_MESSAGE_TRIM_LENGTH
         if hasattr(settings, 'SCARFACE_MESSAGE_TRIM_LENGTH'):
             trim_length = settings.SCARFACE_MESSAGE_TRIM_LENGTH
 
-        if sys.getsizeof(message) > trim_length:
-            while sys.getsizeof(message) > trim_length:
+        if len(message.encode('utf-8')) > trim_length:
+            while len(message.encode('utf-8')) > trim_length:
                 message = message[:-3]
             message += '...'
         return message
